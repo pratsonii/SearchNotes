@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<body ng-app="myApp" ng-controller="myCtrl">
+
+	<div class="container">
+		<form novalidate ng-submit="search()">
+			<br> <input type="text" placeholder="Type Query" ng-model="search.q"> <input
+				type="submit" value="Search">
+
+		</form>
+	</div>
+	<br>
+	<br>
+	<div class="container" ng-if="notes.length >0">
+		<table class="table table-hover">
+			<tr>
+				<th>File Name</th>
+				<th>Path</th>
+			</tr>
+			<tr ng-repeat="x in notes">
+				<td><a ng-href="file:///{{ x.path }}">{{ x.fileName }}</a></td>
+				<td>{{ x.path }}</td>
+				<td>
+					<button type="button" class="btn btn-success" ng-click="search()">Refresh</button>
+				</td>
+			</tr>
+
+		</table>
+	</div>
+
+
+	<script>
+
+angular.module('myApp', [])
+.controller('myCtrl', ['$scope', '$http', function ($scope, $http) {
+
+    $scope.search = function () {
+         var response = $http.get('http://localhost:8123/searchJson?q='+$scope.search.q);
+         response.success(function(data, status, headers, config) {
+
+        	 $scope.notes = data;
+         }); 
+
+    }
+}]);
+
+</script>
+
+
+</body>
+</html>
